@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ServicesService } from '../../services/services.service';
 
 @Component({
   selector: 'app-eventos',
@@ -6,5 +7,15 @@ import { Component } from '@angular/core';
   styleUrl: './eventos.component.css'
 })
 export class EventosComponent {
+  
+  events!: any[];
 
+  constructor(private _eventService: ServicesService) {}
+
+  ngOnInit(): void {
+    this._eventService.getEvents().subscribe(data => {
+      this.events = data;
+      console.log(this.events)
+    });
+  }
 }

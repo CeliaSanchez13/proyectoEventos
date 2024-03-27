@@ -1,1 +1,13 @@
-<p>eventos works!</p>
+<div class="card" style="width: 18rem;" *ngFor="let evento of events">
+    <div class="row pt-3" style="padding-left: 2rem;">
+        <p class="text-primary">{{ evento.title }}</p>
+        <p class="text-primary">{{ evento.subtitle }}</p>
+    </div>
+    <img src="{{ evento.image }}" class="card-img-top" alt="Evento">
+    <div class="card-body">
+      <p class="card-text">{{ evento.description }}</p>
+      <div class="d-grid gap-2">
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
