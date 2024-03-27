@@ -14,7 +14,7 @@ export class EventosComponent {
 
   ngOnInit(): void {
     this._eventService.getEvents().subscribe(data => {
-      this.events = data;
+      this.events = data.sort((a, b) => a.endDate - b.endDate);
       console.log(this.events)
     });
   }
