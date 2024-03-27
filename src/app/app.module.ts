@@ -8,6 +8,7 @@ import { EventosComponent } from './pages/eventos/eventos.component';
 import { EventoIdComponent } from './pages/evento-id/evento-id.component';
 import { MenuComponent } from './shared/menu/menu.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
