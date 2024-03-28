@@ -11,6 +11,7 @@ export interface Event {
 }
 
 export interface Session {
-    date:         string;
-    availability: string;
+    date:              string;
+    availability:      string;
+    contadorEntradas?: number;
 }

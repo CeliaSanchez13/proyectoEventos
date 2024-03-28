@@ -9,7 +9,7 @@
         <div class="row m-1" *ngFor="let sesion of sesionesByEvent;let i = index">
             <div class="col-10">Fecha: {{ sesion.date | date: 'dd/MM/yyyy' }}   ,Disponibilidad: {{ sesion.availability }} </div>
             <div class="col-2">
-                <span class="cantidad">-</span> 0 <span class="cantidad">+</span>
+                <span (click)="operacionSesion(i,1)" class="cantidad"> - </span> {{ sesion.contadorEntradas }} <span (click)="operacionSesion(i,2)" class="cantidad"> + </span>
             </div>  
         </div>
     </div>
