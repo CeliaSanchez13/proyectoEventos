@@ -1,4 +1,7 @@
-<div class="card mb-3" style="width: 30rem;" *ngFor="let evento of events">
+<div class="row justify-content-center">
+  <div class="card col-4 m-3 " 
+       style="width: 30rem;" 
+       *ngFor="let evento of events">
     <div class="row pt-3" style="padding-left: 2rem;">
         <p class="text-primary">{{ evento.title }}</p>
         <p class="text-primary">{{ evento.subtitle }}</p>
@@ -7,8 +10,11 @@
     <div class="card-body">
       <p> {{ evento.startDate | date: 'dd/MM/yyyy' }} - {{ evento.endDate | date: 'dd/MM/yyyy' }} </p>
       <p class="card-text">{{ evento.description }}</p>
-      <div class="d-grid gap-2">
-        <a href="#" class="btn btn-primary">Comprar</a>
-      </div>
+    </div>
+    <div class="d-grid m-2 gap-2">
+      <a [routerLink]="[ '/evento', evento.id]" class="btn btn-primary">Comprar</a>
     </div>
   </div>
+</div>
+
+

@@ -10,12 +10,11 @@ export class EventosComponent {
   
   events!: any[];
 
-  constructor(private _eventService: ServicesService) {}
+  constructor(private _servicesService: ServicesService) {}
 
   ngOnInit(): void {
-    this._eventService.getEvents().subscribe(data => {
+    this._servicesService.getEvents().subscribe(data => {
       this.events = data.sort((a, b) => a.endDate - b.endDate);
-      console.log(this.events)
     });
   }
 }

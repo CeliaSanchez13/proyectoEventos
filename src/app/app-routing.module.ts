@@ -6,7 +6,7 @@ import { EventoIdComponent } from './pages/evento-id/evento-id.component';
 const routes: Routes = [
   { path:'', component:EventosComponent}, //Pagina principal
   { path:'eventos', component:EventosComponent},
-  { path:'home/:id', component:EventoIdComponent}, //Pagina por id
+  { path:'evento/:id', component:EventoIdComponent}, //Pagina por id
   { path:'**', pathMatch:'full', redirectTo:'eventos'} //Pagina default
 ];
 
