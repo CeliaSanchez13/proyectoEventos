@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../../services/services.service';
 import { ActivatedRoute } from '@angular/router';
 import { Evento } from '../../interface/evento.interface';
-import { Session } from 'inspector';
+
 
 @Component({
   selector: 'app-evento-id',
@@ -22,9 +22,11 @@ export class EventoIdComponent implements OnInit{
   ngOnInit(): void {
     this.index = this.route.snapshot.params['id']; //Capturamos el id del evento
 
-    this.eventosInfo = this._servicioService.getEventInfo();
+    this._servicioService.getEventInfo().subscribe(eventosInfo => {
+      this.eventosInfo = eventosInfo;
+      this.searchIdEvent();
+    });
     
-    this.searchIdEvent();
   }
 
 
@@ -39,7 +41,6 @@ export class EventoIdComponent implements OnInit{
         }
       }
     } 
-  console.log("Hola "+this.sesionesByEvent);
 }
   
 
