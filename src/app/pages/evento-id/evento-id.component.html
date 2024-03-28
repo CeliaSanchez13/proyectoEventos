@@ -1,1 +1,23 @@
-<p>evento-id works!</p>
+<div class="row">
+    <div class="col">
+        <p class="text-end"><a [routerLink]="['/evento']">Volver</a></p>
+    </div>
+    
+</div>
+<div class="row justify-content-center" *ngIf="encontrado">
+    <div class="col-4 border border-secondary">
+        <div class="row" *ngFor="let sesion of sesionesByEvent;let i = index">
+            <div class="col-10">Fecha: {{ sesion.date | date: 'dd/MM/yyyy' }}   ,Disponibilidad: {{ sesion.availability }} </div>
+            <div class="col-2">
+                <span>-</span> 0 <span>+</span>
+            </div>  
+        </div>
+    </div>
+    <div class="col-4">
+        <p class="text-end"><a [routerLink]="['/evento']">Volver</a></p>
+    </div>
+    
+</div>
+<div class="row" *ngIf="!encontrado">
+    <p>NO ENCONTRADO</p>
+</div>
