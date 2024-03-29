@@ -14,7 +14,18 @@
         </div>
     </div>
     <div class="col-4">
-        <p class="text-end"><a [routerLink]="['/evento']">Volver</a></p>
+        <div *ngFor="let artista of contenidoCarro">
+            <div class="row">
+                <h4>{{ artista.artista }}</h4>
+                <div class="d-flex bd-highlight" *ngFor="let sesion of artista.sesion">
+                    <div class="p-2 flex-grow-1 bd-highlight">{{ sesion.fecha | date: 'dd/MM/yyyy' }}</div>
+                    <div class="p-2 bd-highlight">{{ sesion.entradas }}</div>
+                    <div class="p-2 bd-highlight">Third flex item</div>
+                </div>
+                <div class="col" *ngFor="let sesion of artista.sesion">{{ sesion.fecha }}</div>
+            </div>
+           
+        </div>
     </div>
     
 </div>

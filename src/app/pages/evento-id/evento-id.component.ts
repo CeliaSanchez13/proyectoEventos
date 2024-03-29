@@ -18,6 +18,7 @@ export class EventoIdComponent implements OnInit{
   artista:string = '';
   reservaExistente = false;
   artistaEncontrado = false;
+  contenidoCarro:any[] = [];
 
   constructor( private _servicioService:ServicesService,
     private route: ActivatedRoute){}
@@ -28,9 +29,11 @@ export class EventoIdComponent implements OnInit{
     this._servicioService.getEventInfo().subscribe(eventosInfo => {
       this.eventosInfo = eventosInfo;
       this.searchIdEvent();
-
-      //TODO: Hacer que si existe la variable reserva en el localStorage, la info de las entradas seleccionadas se mantenga
     });
+
+    this.getSesionInfo();
+    this.cargarContenidoCarro();
+
 
   }
 
@@ -58,11 +61,26 @@ export class EventoIdComponent implements OnInit{
     //opcion 1 = restar
     //opcion 2 = sumar
 
+    this.reservaExistente = false;
+    this.artistaEncontrado = false;
+
     if (opcion == 1) {
       //Restamos
       if( this.sesionesByEvent[sesionPos].availability >= 0 && this.sesionesByEvent[sesionPos].contadorEntradas != 0){
         this.sesionesByEvent[sesionPos].contadorEntradas--;
         this.sesionesByEvent[sesionPos].availability++  ;
+
+        if (localStorage.getItem('reserva')) {
+          let reserva = JSON.parse(localStorage.getItem('reserva') || '{}'); //Si es null nos devuelve un objeto vacio
+
+          reserva = this.bookingSearching(reserva, sesionPos, opcion);
+
+          if(this.setArtist(sesionPos)) {
+            reserva.sesionReserva.push(this.setArtist(sesionPos));
+          }
+
+          this.updateBooking(reserva);
+        }
       }
 
     }else if(opcion == 2){
@@ -76,40 +94,14 @@ export class EventoIdComponent implements OnInit{
         if (localStorage.getItem('reserva')) {
           let reserva = JSON.parse(localStorage.getItem('reserva') || '{}'); //Si es null nos devuelve un objeto vacio
 
-          // Buscamos si ya existe una reserva para la misma fecha
-          for (let i = 0; i < reserva.sesionReserva.length; i++) {
-            if( reserva.sesionReserva[i].artista == this.artista ){
-              this.artistaEncontrado = true;
-              for (let j = 0; j < reserva.sesionReserva[i].sesion.length; j++) {
-                if ( reserva.sesionReserva[i].sesion[j].fecha == this.sesionesByEvent[sesionPos].date ){
-                  this.reservaExistente = true;
-                  reserva.sesionReserva[i].sesion[j].entradas++;
-                }
-              }
-              if (!this.reservaExistente){
-                reserva.sesionReserva[i].sesion.push({
-                  fecha: this.sesionesByEvent[sesionPos].date,
-                  entradas: this.sesionesByEvent[sesionPos].contadorEntradas
-                });
-                break;
-              }
-            }
-          }//Fin_for
+          reserva = this.bookingSearching(reserva, sesionPos, opcion);
 
-          if( !this.artistaEncontrado ){
-            //Si no ha encontrado el artista, añadimos la nueva estructura
-            let artistaReserva = {
-              artista: this.artista,
-              sesion: [{
-                  fecha: this.sesionesByEvent[sesionPos].date,
-                  entradas: this.sesionesByEvent[sesionPos].contadorEntradas
-              }]
-            };
-            reserva.sesionReserva.push(artistaReserva);
+          if(this.setArtist(sesionPos)) {
+            reserva.sesionReserva.push(this.setArtist(sesionPos));
           }
 
-          localStorage.setItem('reserva', JSON.stringify(reserva));
-        }else{
+          this.updateBooking(reserva);
+        } else{
            //Si no existe la variable porque no hay reservas hechas.. la creamos
           let sesionReserva = {
                                 artista : this.artista,
@@ -125,6 +117,73 @@ export class EventoIdComponent implements OnInit{
         }
       }
     }//Fin_else_if  
+    this.cargarContenidoCarro();
   }//Fin_fun_operacionSesion
+
+  cargarContenidoCarro(){
+    let reserva = JSON.parse(localStorage.getItem('reserva') || '{}');
+
+    this.contenidoCarro = reserva.sesionReserva;
+    console.log(this.contenidoCarro);
+    
+  }
+
+  private setArtist(sesionPos:number): any {
+    if( !this.artistaEncontrado ){
+      //Si no ha encontrado el artista, añadimos la nueva estructura
+      let artistaReserva = {
+        artista: this.artista,
+        sesion: [{
+            fecha: this.sesionesByEvent[sesionPos].date,
+            entradas: this.sesionesByEvent[sesionPos].contadorEntradas
+        }]
+      };
+      return artistaReserva;
+    }
+  }
+
+  private updateBooking(reserva: any): void {
+    localStorage.setItem('reserva', JSON.stringify(reserva));
+  }
+
+  private bookingSearching(reserva: any, sesionPos: number, option: number): any {
+    // Buscamos si ya existe una reserva para la misma fecha
+    for (let i = 0; i < reserva.sesionReserva.length; i++) {
+      if( reserva.sesionReserva[i].artista == this.artista ){
+        this.artistaEncontrado = true;
+        for (let j = 0; j < reserva.sesionReserva[i].sesion.length; j++) {
+          if ( reserva.sesionReserva[i].sesion[j].fecha == this.sesionesByEvent[sesionPos].date ){
+            this.bookingNumberUpdate(reserva, i, j, option);
+          }
+        }
+        if (!this.reservaExistente){
+          reserva.sesionReserva[i].sesion.push({
+            fecha: this.sesionesByEvent[sesionPos].date,
+            entradas: this.sesionesByEvent[sesionPos].contadorEntradas
+          });
+          break;
+        }
+      }
+    }//Fin_for
+
+    return reserva;
+  }
+
+  private bookingNumberUpdate(reserva: any, bookingPosition: number, sessionPosition: number, option: number): void {
+    this.reservaExistente = true;
+    if(option === 1) {
+      reserva.sesionReserva[bookingPosition].sesion[sessionPosition].entradas--;
+    } else if(option === 2) {
+      reserva.sesionReserva[bookingPosition].sesion[sessionPosition].entradas++;
+    }
+  }
+
+  private getSesionInfo():void {
+    let reserva = JSON.parse(localStorage.getItem('reserva') || '{}');
+
+    //this.sesionesByEvent[sesionPos]
+    //let reservaFilter = reserva.filter( f => )
+
+  }
 
 }
