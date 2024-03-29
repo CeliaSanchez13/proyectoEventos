@@ -17,6 +17,7 @@ export class EventoIdComponent implements OnInit{
   encontrado = false;
   artista:string = '';
   reservaExistente = false;
+  artistaEncontrado = false;
 
   constructor( private _servicioService:ServicesService,
     private route: ActivatedRoute){}
@@ -27,6 +28,8 @@ export class EventoIdComponent implements OnInit{
     this._servicioService.getEventInfo().subscribe(eventosInfo => {
       this.eventosInfo = eventosInfo;
       this.searchIdEvent();
+
+      //TODO: Hacer que si existe la variable reserva en el localStorage, la info de las entradas seleccionadas se mantenga
     });
 
   }
@@ -75,20 +78,34 @@ export class EventoIdComponent implements OnInit{
 
           // Buscamos si ya existe una reserva para la misma fecha
           for (let i = 0; i < reserva.sesionReserva.length; i++) {
-            for (let j = 0; j < reserva.sesionReserva[i].sesion.length; j++) {
-              // Comparar las fechas si existe ya o no
-              if (reserva.sesionReserva[i].sesion[j].fecha === this.sesionesByEvent[sesionPos].date) {
+            if( reserva.sesionReserva[i].artista == this.artista ){
+              this.artistaEncontrado = true;
+              for (let j = 0; j < reserva.sesionReserva[i].sesion.length; j++) {
+                if ( reserva.sesionReserva[i].sesion[j].fecha == this.sesionesByEvent[sesionPos].date ){
                   this.reservaExistente = true;
                   reserva.sesionReserva[i].sesion[j].entradas++;
-                  break; //Si lo encuentra, salimos del bucle
+                }
               }
-              
+              if (!this.reservaExistente){
+                reserva.sesionReserva[i].sesion.push({
+                  fecha: this.sesionesByEvent[sesionPos].date,
+                  entradas: this.sesionesByEvent[sesionPos].contadorEntradas
+                });
+                break;
+              }
             }
-            if (!this.reservaExistente){
-              //No ha sido encontrado asi que lo añadimos y salimos del bucle
-              reserva.sesionReserva[i].sesion.push({fecha:this.sesionesByEvent[sesionPos].date,entradas:this.sesionesByEvent[sesionPos].contadorEntradas});
-              break;
-            }
+          }//Fin_for
+
+          if( !this.artistaEncontrado ){
+            //Si no ha encontrado el artista, añadimos la nueva estructura
+            let artistaReserva = {
+              artista: this.artista,
+              sesion: [{
+                  fecha: this.sesionesByEvent[sesionPos].date,
+                  entradas: this.sesionesByEvent[sesionPos].contadorEntradas
+              }]
+            };
+            reserva.sesionReserva.push(artistaReserva);
           }
 
           localStorage.setItem('reserva', JSON.stringify(reserva));
