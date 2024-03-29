@@ -54,12 +54,9 @@ export class EventoIdComponent implements OnInit{
 
     if (opcion == 1) {
       //Restamos
-      if( this.sesionesByEvent[sesionPos].availability > 0 ){
+      if( this.sesionesByEvent[sesionPos].availability >= 0 && this.sesionesByEvent[sesionPos].contadorEntradas != 0){
         this.sesionesByEvent[sesionPos].contadorEntradas--;
         this.sesionesByEvent[sesionPos].availability++  ;
-        
-      }else{
-        //Es cero y evitamos el negativo, mostraremos un mensaje con el sweet alert
       }
 
     }else if(opcion == 2){
@@ -67,9 +64,6 @@ export class EventoIdComponent implements OnInit{
       if( this.sesionesByEvent[sesionPos].availability > 0 ){
         this.sesionesByEvent[sesionPos].contadorEntradas++;
         this.sesionesByEvent[sesionPos].availability--  ;
-        
-      }else{
-        //Es cero y evitamos el negativo, mostraremos un mensaje con el sweet alert
       }
     }
     
