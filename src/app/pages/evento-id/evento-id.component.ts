@@ -25,7 +25,7 @@ export class EventoIdComponent implements OnInit{
 
   ngOnInit(): void {
     this.index = this.route.snapshot.params['id']; //Capturamos el id del evento
-
+    
     this._servicioService.getEventInfo().subscribe(eventosInfo => {
       this.eventosInfo = eventosInfo;
       this.searchIdEvent();
@@ -187,9 +187,9 @@ export class EventoIdComponent implements OnInit{
 
   private bookingNumberUpdate(reserva: any, bookingPosition: number, sessionPosition: number, option: number): void {
     this.reservaExistente = true;
-    if(option === 1) {
+    if(option === 1) { //Restar entradas
       reserva.sesionReserva[bookingPosition].sesion[sessionPosition].entradas--;
-    } else if(option === 2) {
+    } else if(option === 2) { //Sumar entradas
       reserva.sesionReserva[bookingPosition].sesion[sessionPosition].entradas++;
     }
   }
@@ -197,9 +197,16 @@ export class EventoIdComponent implements OnInit{
   private getSesionInfo():void {
     let reserva = JSON.parse(localStorage.getItem('reserva') || '{}');
 
-    //this.sesionesByEvent[sesionPos]
-    //let reservaFilter = reserva.filter( f => )
-
+    for (let i = 0; i < reserva.sesionReserva.length; i++) {
+      if( reserva.sesionReserva[i].artista == this.artista ){
+        for (let j = 0; j < reserva.sesionReserva[i].sesion.length; j++) {
+          // Actualizar contadorEntradas
+          this.sesionesByEvent[i].contadorEntradas = reserva.sesionReserva[i].sesion[j].entradas;
+          // Restar la cantidad de entradas de availability
+          this.sesionesByEvent[i].availability -= reserva.sesionReserva[i].sesion[j].entradas;
+        }
+      }
+    }//Fin_for
   }
 
 }
