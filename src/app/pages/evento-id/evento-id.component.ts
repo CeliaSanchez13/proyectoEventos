@@ -21,7 +21,7 @@ export class EventoIdComponent implements OnInit{
   contenidoCarro:any[] = [];
 
   constructor( private _servicioService:ServicesService,
-    private route: ActivatedRoute){}
+               private route: ActivatedRoute){}
 
   ngOnInit(): void {
     this.index = this.route.snapshot.params['id']; //Capturamos el id del evento
@@ -128,6 +128,19 @@ export class EventoIdComponent implements OnInit{
     
   }
 
+  deleteSession(artistaI:number,sesionI:number){
+    let reserva = JSON.parse(localStorage.getItem('reserva') || '{}');
+    
+    if (reserva.sesionReserva && reserva.sesionReserva[artistaI] && reserva.sesionReserva[artistaI].sesion) {
+      reserva.sesionReserva[artistaI].sesion.splice(sesionI, 1);
+      localStorage.setItem('reserva', JSON.stringify(reserva));
+      this.cargarContenidoCarro();
+    } else {
+        console.log('No se encontró el elemento para eliminar');
+    }
+  }
+
+  //FUNCIONES PRIVADAS
   private setArtist(sesionPos:number): any {
     if( !this.artistaEncontrado ){
       //Si no ha encontrado el artista, añadimos la nueva estructura

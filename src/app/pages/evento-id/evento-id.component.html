@@ -1,34 +1,34 @@
-<div class="row">
-    <div class="col">
-        <p class="text-end"><a [routerLink]="['/evento']">Volver</a></p>
-    </div>
-    
-</div>
-<div class="row justify-content-center" *ngIf="encontrado">
-    <div class="col-4 border border-secondary p-4">
-        <div class="row m-1" *ngFor="let sesion of sesionesByEvent;let i = index">
-            <div class="col-10">Fecha: {{ sesion.date | date: 'dd/MM/yyyy' }}   ,Disponibilidad: {{ sesion.availability }} </div>
-            <div class="col-2">
-                <span (click)="operacionSesion(i,1)" class="cantidad"> - </span> {{ sesion.contadorEntradas }} <span (click)="operacionSesion(i,2)" class="cantidad"> + </span>
-            </div>  
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <p class="text-end"><a [routerLink]="['/evento']">Volver</a></p>
         </div>
     </div>
-    <div class="col-4">
-        <div *ngFor="let artista of contenidoCarro">
-            <div class="row">
-                <h4>{{ artista.artista }}</h4>
-                <div class="d-flex bd-highlight" *ngFor="let sesion of artista.sesion">
-                    <div class="p-2 flex-grow-1 bd-highlight">{{ sesion.fecha | date: 'dd/MM/yyyy' }}</div>
-                    <div class="p-2 bd-highlight">{{ sesion.entradas }}</div>
-                    <div class="p-2 bd-highlight">Third flex item</div>
-                </div>
-                <div class="col" *ngFor="let sesion of artista.sesion">{{ sesion.fecha }}</div>
+    <div class="row justify-content-center" *ngIf="encontrado">
+        <div class="col-md-4 border border-secondary p-4">
+            <div class="row m-1" *ngFor="let sesion of sesionesByEvent; let i = index">
+                <div class="col-8 col-md-10">Fecha: {{ sesion.date | date: 'dd/MM/yyyy' }}   ,Disponibilidad: {{ sesion.availability }} </div>
+                <div class="col-4 col-md-2">
+                    <span (click)="operacionSesion(i,1)" class="cantidad"> - </span> {{ sesion.contadorEntradas }} <span (click)="operacionSesion(i,2)" class="cantidad"> + </span>
+                </div>  
             </div>
-           
+        </div>
+        <div class="col-md-4">
+            <div *ngFor="let artista of contenidoCarro;let artistaI = index">
+                <div class="row">
+                    <h6>{{ artista.artista }}</h6>
+                    <div class="d-flex bd-highlight" *ngFor="let sesion of artista.sesion;let sesionI = index">
+                        <div class="p-2 flex-grow-1 bd-highlight">{{ sesion.fecha | date: 'dd/MM/yyyy' }}</div>
+                        <div class="p-2 bd-highlight">x {{ sesion.entradas }}</div>
+                        <div class="p-2 bd-highlight"><img src="./../../../assets/img/trash.png" width="15" (click)="deleteSession(artistaI,sesionI)"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
-</div>
-<div class="row" *ngIf="!encontrado">
-    <p>NO ENCONTRADO</p>
+    <div class="row" *ngIf="!encontrado">
+        <div class="col">
+            <p>EVENT INFO NOT FOUND</p>
+        </div>
+    </div>
 </div>
