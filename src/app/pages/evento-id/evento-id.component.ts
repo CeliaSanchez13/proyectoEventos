@@ -133,8 +133,11 @@ export class EventoIdComponent implements OnInit{
     
     if (reserva.sesionReserva && reserva.sesionReserva[artistaI] && reserva.sesionReserva[artistaI].sesion) {
       reserva.sesionReserva[artistaI].sesion.splice(sesionI, 1);
+      if (reserva.sesionReserva[artistaI].sesion.length == 0){
+        reserva.sesionReserva.splice(artistaI, 1);
+      }
       localStorage.setItem('reserva', JSON.stringify(reserva));
-      this.cargarContenidoCarro();
+      this.cargarContenidoCarro(); //Actualizamos el carro de forma visual
     } else {
         console.log('No se encontró el elemento para eliminar');
     }
